@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import studentRouter from "./routes/studentRouter.js";
 import productRouter from "./routes/productRouter.js";
+import userRouter from "./routes/userRouter.js";
 
 const app = express();
 const monogourl =
@@ -16,8 +17,9 @@ connection.once("open", () => {
 });
 
 app.use(bodyParser.json());
-app.use("/api/students" , studentRouter)
-app.use("/api/products" , productRouter)
+app.use("/api/students", studentRouter);
+app.use("/api/products", productRouter);
+app.use("/api/users", userRouter);
 
 app.listen(3000, () => {
   console.log("Server is rinning on port 3000");
