@@ -1,10 +1,10 @@
 import Student from "../models/student.js";
 
 export function getStudents(req, res) {
-  Student.find().then((studentList) => {
+  Student.find().then((studentlist) => {
     [
       res.json({
-        List: studentList,
+        list: studentlist,
       }),
     ];
   });

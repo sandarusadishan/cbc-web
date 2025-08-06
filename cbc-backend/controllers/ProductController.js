@@ -7,10 +7,10 @@
 import Product from "../models/product.js";
 
 export function getProducts(req, res) {
-  Product.find().then((productlist) => {
+  Product.find().then((productList) => {
     [
       res.json({
-        List: productlist,
+        list: productList,
       }),
     ];
   });
@@ -33,13 +33,39 @@ export function createProducts(req, res) {
 }
 
 export function deleteProducts(req, res) {
-  Product.deleteOne({ name: req.body.name }).then(() => {
-    res.json({
-      message: " product deleted successfully",
-    });
-  }).catch(()=>{
-    res.json({
-      message : "product not deleted"
+  Product.deleteOne({ name: req.params.name })
+    .then(() => {
+      res.json({
+        message: " product deleted successfully",
+      });
     })
-  })
+    .catch(() => {
+      res.json({
+        message: "product not deleted",
+      });
+    });
+}
+
+export function getProductByName(req, res) {
+  const name = req.params.name;
+  // res.json({
+  //   message : "Product name is "+ name
+  // })
+  Product.find({ name: name })
+    .then((productList) => {
+      if (productList.length == 0) {
+        res.json({
+          message: "product not found",
+        });
+      } else {
+        res.json({
+          list: productList,
+        });
+      }
+    })
+    .catch(() => {
+      res.json({
+        message: "Error",
+      });
+    });
 }
