@@ -17,6 +17,19 @@ connection.once("open", () => {
 });
 
 app.use(bodyParser.json());
+
+
+
+app.use((req,resizeBy,next)=>{
+  next()
+})
+
+
+
+
+
+
+
 app.use("/api/students", studentRouter);
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
