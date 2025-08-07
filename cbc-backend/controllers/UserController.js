@@ -47,24 +47,25 @@ export function loginUser(req, res) {
             profilePicture: user.profilePicture,
           },
           "cbc-secret-key-7973"
-        )
+        );
 
         res.json({
-          message : "User logged in",
-          token : token
-        })
-        
-
-
-
-
-
-
+          message: "User logged in",
+          token: token,
+        });
       } else {
         res.json({
           message: "User not logged in invalid password",
         });
       }
     }
+  });
+}
+
+export function deleteUser(req, res) {
+  User.deleteUser({ email: req.body.email }).then(() => {
+    res.json({
+      message: "Student deleted",
+    });
   });
 }
