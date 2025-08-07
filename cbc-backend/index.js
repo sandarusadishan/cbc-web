@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import studentRouter from "./routes/studentRouter.js";
 import productRouter from "./routes/productRouter.js";
 import userRouter from "./routes/userRouter.js";
+import jwt, { decode } from "jsonwebtoken";
 
 const app = express();
 const monogourl =
@@ -18,17 +19,19 @@ connection.once("open", () => {
 
 app.use(bodyParser.json());
 
-
-
-app.use((req,resizeBy,next)=>{
-  next()
-})
-
-
-
-
-
-
+app.use((req, resizeBy, next) => {
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+  console.log(token);
+  if (token != null) {
+    jwt.verify(token, "cbc-secret-key-7973", (error, decoded) => {
+      if (!error) {
+        console.log(decoded);
+        req.user = decoded;
+      }
+    });
+  }
+  next();
+});
 
 app.use("/api/students", studentRouter);
 app.use("/api/products", productRouter);
@@ -37,4 +40,3 @@ app.use("/api/users", userRouter);
 app.listen(3000, () => {
   console.log("Server is rinning on port 3000");
 });
- 
