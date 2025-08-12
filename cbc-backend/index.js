@@ -5,6 +5,7 @@ import productRouter from "./routes/productRouter.js";
 import userRouter from "./routes/userRouter.js";
 import jwt, { decode } from "jsonwebtoken";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const app = express();
@@ -23,7 +24,7 @@ app.use((req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
   console.log(token);
   if (token != null) {
-    jwt.verify(token, "cbc-secret-key-7973", (error, decoded) => {
+    jwt.verify(token, process.env.SECRET, (error, decoded) => {
       if (!error) {
         console.log(decoded);
         req.user = decoded;
