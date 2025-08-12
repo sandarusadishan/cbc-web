@@ -5,13 +5,13 @@ import productRouter from "./routes/productRouter.js";
 import userRouter from "./routes/userRouter.js";
 import jwt, { decode } from "jsonwebtoken";
 import dotenv from "dotenv";
-dotenv.config()
+dotenv.config();
 
 const app = express();
-const monogourl = process.env.MONGO_DB_URI
+const monogourl = process.env.MONGO_DB_URI;
 
 mongoose.connect(monogourl, {});
-const connection = mongoose.connection; 
+const connection = mongoose.connection;
 
 connection.once("open", () => {
   console.log("Database Connected");
@@ -32,7 +32,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
 
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
