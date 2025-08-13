@@ -30,6 +30,3 @@ export function getProducts(req,res) {
     
 }
 
-export function deleteProducts(req,res) {
-    
-}
