@@ -7,6 +7,21 @@ dotenv.config();
 
 export function createUser(req, res) {
   const newUserData = req.body;
+  if (newUserData.type == "admin") {
+    if (req.user == null) {
+      res.json({
+        message: "please login as administrator to create admin accounts",
+      });
+      return;
+    }
+
+    if (req.user.type != "admin") {
+      res.json({
+        message: "Please login as administrator to create admin account",
+      });
+      return;
+    }
+  }
   newUserData.password = bcrypt.hashSync(newUserData.password, 10);
 
   const user = new User(newUserData);
@@ -68,7 +83,30 @@ export function loginUser(req, res) {
 export function deleteUser(req, res) {
   User.deleteUser({ email: req.body.email }).then(() => {
     res.json({
-      message: "User sccessfully deleted",
+      message: "User successfully deleted",
     });
   });
 }
+
+export function isAdmin(req) {
+  if (req.user == null) {
+    return false;
+  }
+  if (req.user.type != "admin") {
+    return false;
+  }
+  return true;
+}
+
+export function isCustomer(req) {
+  if (req.user == null) {
+    return false;
+  }
+  if (req.user.type != "customer") {
+    return false;
+  }
+  return true;
+}
+
+//securePassword123
+//shan27@example.com
