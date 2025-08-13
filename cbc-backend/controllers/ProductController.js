@@ -1,13 +1,15 @@
 import Product from "../models/product.js";
+import { isAdmin } from "./UserController.js";
 
 export function createProduct(req, res) {
-
-    if (is) {
-        
-    }
+  if (!isAdmin(req)) {
+    res.json({
+      message: "Please login as admin to add product",
+    });
+  }
   const newProductData = req.body;
   const newProduct = new Product(newProductData);
-  Product.save()
+  newProduct.save()
     .then(() => {
       res.json({
         message: "Product created successfully",
@@ -15,7 +17,19 @@ export function createProduct(req, res) {
     })
     .catch((Error) => {
       res.json({
-        message: "Error creating product",
+        message: Error,
       });
     });
+}
+
+
+export function getProducts(req,res) {
+    Product.find({}).then((products)=>{
+        res.json(products);
+    })
+    
+}
+
+export function deleteProducts(req,res) {
+    
 }
