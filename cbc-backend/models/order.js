@@ -58,5 +58,5 @@ const orderSchema = mongoose.Schema({
   },
 });
 
-const Order = mongoose.Schema("orders", orderSchema);
+const Order = mongoose.model("orders", orderSchema);
 export default Order;
