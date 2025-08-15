@@ -110,3 +110,6 @@ export function isCustomer(req) {
 
 //securePassword123
 //shan27@example.com
+
+// "email": "shan27@example.com"
+// "password": "securePassword123"
