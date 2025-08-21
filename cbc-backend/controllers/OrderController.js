@@ -2,71 +2,83 @@ import Order from "../models/order.js";
 import Product from "../models/product.js";
 import { isCustomer } from "./UserController.js";
 
-/**
- * Create a new order
- */
 export async function createOrder(req, res) {
-  try {
-    // ✅ Check customer role
-    if (!isCustomer(req.user)) {
-      return res.status(403).json({
-        message: "Please login as customer to create orders",
-      });
-    }
+  if (!isCustomer) {
+    return res.status(401).json({
+      message: "Please login as customer to create orders",
+    });
+  }
 
-    // ✅ Generate orderId
+  try {
     const latestOrder = await Order.find().sort({ date: -1 }).limit(1);
     let orderId;
-    if (!latestOrder.length) {
+    if (latestOrder.length === 0) {
       orderId = "CBC001";
     } else {
       const currentOrderId = latestOrder[0].orderId;
       const numberString = currentOrderId.replace("CBC", "");
-      const newNumber = (parseInt(numberString) + 1).toString().padStart(4, "0");
+      const number = parseInt(numberString);
+      const newNumber = (number + 1).toString().padStart(4, "0");
       orderId = "CBC" + newNumber;
     }
 
-    // ✅ Process ordered items
+    const newOrderData = req.body;
     const newProductArray = [];
-    for (let item of req.body.orderedItems) {
-      const product = await Product.findOne({ productId: item.productId });
+
+    // Ensure orderedItems exists and is an array
+    if (!newOrderData.orderedItems || !Array.isArray(newOrderData.orderedItems)) {
+      return res.status(400).json({
+        message: "Invalid request body. 'orderedItems' array is required.",
+      });
+    }
+
+    for (let i = 0; i < newOrderData.orderedItems.length; i++) {
+      const item = newOrderData.orderedItems[i];
+
+      if (!item.productId) {
+        return res.status(400).json({
+          message: `Product Id is missing for item at index ${i}.`,
+        });
+      }
+
+      const product = await Product.findOne({
+        productId: item.productId,
+      });
+
       if (!product) {
         return res.status(404).json({
           message: `Product with Id ${item.productId} not found`,
         });
       }
 
-      newProductArray.push({
-        name: product.productName,
+      newProductArray[i] = {
+        name: product.name,
         price: product.price,
         quantity: item.quantity,
-        image: product.images[0] || "",
-      });
+        image: product.images[0],
+      };
     }
 
-    // ✅ Create order object
-    const newOrder = new Order({
-      orderId,
-      userId: req.user._id,
-      email: req.user.email,
-      name: req.body.name,
-      address: req.body.address,
-      phone: req.body.phone,
-      notes: req.body.notes || "",
-      orderedItems: newProductArray,
-    });
+    newOrderData.orderedItems = newProductArray;
+    newOrderData.orderId = orderId;
+    newOrderData.email = req.user.email;
+    newOrderData.userId = req.user.userId; // Assuming userId is available in the request user object
 
-    await newOrder.save();
-    res.json({ message: "Order created successfully", orderId });
+    const order = new Order(newOrderData);
+    await order.save();
+    res.json({
+      message: "Order created successfully",
+      orderId: order.orderId,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 }
 
-/**
- * Get all orders
- */
-export async function getOrders(req, res) {
+// GET all orders
+export async function getOrder(req, res) {
   try {
     const orders = await Order.find();
     res.json(orders);
@@ -75,26 +87,26 @@ export async function getOrders(req, res) {
   }
 }
 
-/**
- * Get order by ID
- */
+// GET single order by ID
 export async function getOrderById(req, res) {
   try {
     const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json({ message: "Order not found" });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
     res.json(order);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
 
-/**
- * Delete order by ID
- */
+// DELETE order by ID
 export async function deleteOrder(req, res) {
   try {
     const deletedOrder = await Order.findByIdAndDelete(req.params.id);
-    if (!deletedOrder) return res.status(404).json({ message: "Order not found" });
+    if (!deletedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
     res.json({ message: "Order deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
