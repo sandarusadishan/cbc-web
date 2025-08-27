@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./testing.css";
+import Header from "../pages/Header.jsx";
 export default function Testing() {
   const [count, setCount] = useState(0);
   const [name, setName] = useState("Students");
@@ -17,6 +17,7 @@ export default function Testing() {
   }
   return (
     <div className="background">
+      <Header />
       <h1>{name}</h1>
       <button className="val" onClick={decrement}>-</button>
       <span>{count}</span>
