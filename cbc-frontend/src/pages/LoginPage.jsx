@@ -1,7 +1,9 @@
-import './loginPage.css';
+import './css/LoginPage.css'
+import Header from './Header';
 export default function LoginPage() {
   return (
     <div className="login-wrapper">
+      <Header />
       <div className="login-card">
         <h1>Welcome Back</h1>
         <p className="subtitle">Please log in to your account</p>
@@ -17,7 +19,7 @@ export default function LoginPage() {
         <div className="extra-links">
           <a href="#">Forgot password?</a>
           <span> · </span>
-          <a href="#">Sign up</a>
+          <a href="/signup">Sign up</a>
         </div>
       </div>
     </div>
