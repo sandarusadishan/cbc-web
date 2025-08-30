@@ -2,7 +2,7 @@ import Header from './Header';
 
 export default function LoginPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-">
       <Header />
 
       <div className="flex-1 flex items-center justify-center px-4">
@@ -25,7 +25,7 @@ export default function LoginPage() {
             />
             <button
               type="submit"
-              className="bg-blue-600 text-white font-medium py-3 rounded-lg hover:bg-yellow-600 transition-colors"
+              className="bg-yellow-600 text-white font-medium py-3 rounded-lg hover:bg-blue-600 transition-colors"
             >
               Login
             </button>
